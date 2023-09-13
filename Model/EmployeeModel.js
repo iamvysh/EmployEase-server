@@ -21,7 +21,7 @@ const EmployeeSchema=new mongoose.Schema({
     },
     Aadharnumber:{
         type:String,
-        required:true
+        // required:true
     },
     gender:{
         type:String
