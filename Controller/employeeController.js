@@ -11,7 +11,7 @@ const EmployeeRegister = async (req, res) => {
         let jpgUrls = []; // Array to store JPG URLs
         const {name,phonenumber,email,password,gender,address,pincode,state,skills} = req.body;
 
-        console.log(name,phonenumber,email,password,gender,address,pincode,state,skills);
+        console.log(name,phonenumber,email,password,gender,address,pincode,state,skills,Aadharnumber);
 
         const uploader = async (path) => await cloudinary.uploads(path, "imagefile");
         const files = req.files;
@@ -55,7 +55,8 @@ const EmployeeRegister = async (req, res) => {
             state:state,
             imagefile:image,
             pcccertificate:certifiacte,
-            skills:skills
+            skills:skills,
+            Aadharnumber:Aadharnumber
 
         })
         await Employee.save()
