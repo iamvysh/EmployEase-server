@@ -21,7 +21,7 @@ const EmployeeSchema=new mongoose.Schema({
     },
     Aadharnumber:{
         type:String,
-        // required:true
+        required:true
     },
     gender:{
         type:String
@@ -48,7 +48,10 @@ const EmployeeSchema=new mongoose.Schema({
     skills:{
         type:String
 
-    }
+    }, isApproved: {
+        type: Boolean,
+        default: false, 
+      },
 
 })
 

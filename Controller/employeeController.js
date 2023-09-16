@@ -5,35 +5,36 @@ const Path = require('path')
 
 const EmployeeRegister = async (req, res) => {
     console.log(req.body);
-
+    
     try {
         let pdfUrls = []; // Array to store PDF URLs
         let jpgUrls = []; // Array to store JPG URLs
-        const {name,phonenumber,email,password,gender,address,pincode,state,skills} = req.body;
-
-        console.log(name,phonenumber,email,password,gender,address,pincode,state,skills,Aadharnumber);
-
+        const {name,phonenumber,email,password,gender,address,pincode,state,skills,Aadharnumber} = req.body;
+        
+        // console.log(name,phonenumber,email,password,gender,address,pincode,state,skills,);
+        
         const uploader = async (path) => await cloudinary.uploads(path, "imagefile");
-        const files = req.files;
-
-        for (const file of files) {
+        console.log("req files",req.files);
+        const docs = req.files;
+        console.log("docs :",docs)
+        for (const file of docs) {
             const { path } = file;
-            // console.log(path);
+            console.log("path from multer :",path);
             const newPath = await uploader(path);
-            console.log(newPath.url);
+            console.log("newPath",newPath.url);
             const fileExtension = Path.extname(newPath.url); // Get file extension
-            console.log(fileExtension);
+            console.log("fileextention",fileExtension);
             if (fileExtension == '.pdf') {
                 pdfUrls.push(newPath.url);
-            } else if (fileExtension == '.png') {
+            } else  {
                 jpgUrls.push(newPath.url);
             }
         }
         const image=jpgUrls[0]
         const certifiacte=pdfUrls[0]
 
-        console.log(image);
-        console.log(certifiacte);
+        console.log("cloud image url :",image);
+        console.log("clould pdf url :",certifiacte);
 
         // const response = {
         //     message: "Data successfully received",

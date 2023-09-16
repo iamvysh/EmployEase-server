@@ -3,13 +3,13 @@ const express = require('express')
 const mongoose=require("mongoose")
 const app = express()
 const port = 3000
-
+const cors=require("cors")
 
 
 
 app.use(express.json())
 app.use(express.urlencoded())
-
+app.use(cors())
 
 
 
