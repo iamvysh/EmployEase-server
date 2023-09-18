@@ -29,6 +29,10 @@ const employeeRoute=require("./Routers/EmployeeRoute")
 app.use(employeeRoute)
 
 
+const agencyRoute=require("./Routers/AgencyRoute")
+app.use(agencyRoute)
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
