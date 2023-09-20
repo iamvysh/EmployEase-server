@@ -1,4 +1,5 @@
 const agency=require("../Model/AgencyModel")
+const employees=require("../Model/EmployeeModel")
 
 
 
@@ -80,5 +81,60 @@ const agencyLogin=async(req,res)=>{
     }
 }
 
+const UnapprovedEmployees=async(req,res)=>{
 
-module.exports = {AgencyRegister,agencyLogin}
+    try {
+
+        const AllunApprovedEmployees= await employees.find({isApproved:false})
+
+        if( AllunApprovedEmployees.length>0){
+            res.status(200).json({
+                status:"success",
+                Data:AllunApprovedEmployees
+            })
+        }else{
+            res.status(205).json({
+                status:"success",
+                message:"no new request"
+            })
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            status:"internal server error",
+            message:error.message
+        })
+        
+    }
+
+}
+
+const UnApprovedEmployee=async(req,res)=>{
+    try {
+        const {id}=req.params
+        console.log(id)
+        const Employee=await employees.findOne({_id:id})
+
+        if(Employee){
+            return res.status(200).json({
+                status:"success",
+                Data:Employee
+            })
+        }else{
+            return res.status(205).json({
+                status:"success",
+                message:"no employee found"
+            })
+        }
+        
+    } catch (error) {
+        res.status(500).json({
+            status:"internal server error",
+            message:error.message
+        })
+        
+    }
+}
+
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee}
