@@ -1,6 +1,6 @@
 const agency=require("../Model/AgencyModel")
 const employees=require("../Model/EmployeeModel")
-
+const { sendSMS } = require('../Twilio/Twili')
 
 
 const   AgencyRegister=async(req,res)=>{
@@ -136,5 +136,64 @@ const UnApprovedEmployee=async(req,res)=>{
     }
 }
 
+const DeleteAunapprovedEmployee=async(req,res)=>{
+    try {
+        const {id}=req.params
+        const Employee=await employees.findByIdAndDelete({_id:id})
+        
+        if(Employee){
+            return res.status(200).json({
+                status:"success",
+                message:"employee deleted successfully"
+            })
+        }else{
+            return res.status(205).json({
+                status:"failure",
+                message:"no employee found"
+            })
+        }
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee}
+    } catch (error) {
+        
+        res.status(500).json({
+            status:"internal server error",
+            message:error.message
+        })
+
+    }
+}
+
+const approveEmployeeById = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      
+      const employee = await employees.findByIdAndUpdate(
+        id,
+        { isApproved: true },
+        { new: true } 
+      );
+  
+      if (!employee) {
+        return res.status(405).json({ message: 'Employee not found' });
+      }
+
+      // Check if isApproved is true, and if so, send an SMS
+    if (employee.isApproved) {
+        // const number=`+91${employee.phonenumber}`
+        // const number="+918921358370"
+        const number = "+91" + employee.phonenumber;
+        console.log(number);
+        const message = `Dear ${employee.name}......Your employee account has been approved. Welcome to EmployEase!`
+        await sendSMS(number, message);
+      }
+  
+      res.status(200).json({ message: 'Employee approved successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById}
