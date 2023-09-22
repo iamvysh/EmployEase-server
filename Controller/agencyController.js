@@ -137,9 +137,15 @@ const UnApprovedEmployee=async(req,res)=>{
 }
 
 const DeleteAunapprovedEmployee=async(req,res)=>{
+    console.log("this is from deletelemployee ");
     try {
         const {id}=req.params
+        console.log(id);
         const Employee=await employees.findByIdAndDelete({_id:id})
+
+        console.log("this is from try block");
+
+        console.log(Employee,"employeeeee requestigsrhighsdi");
         
         if(Employee){
             return res.status(200).json({
@@ -166,6 +172,7 @@ const DeleteAunapprovedEmployee=async(req,res)=>{
 const approveEmployeeById = async (req, res) => {
     try {
       const { id } = req.params; 
+      console.log(id)
   
       
       const employee = await employees.findByIdAndUpdate(
@@ -183,8 +190,9 @@ const approveEmployeeById = async (req, res) => {
         // const number=`+91${employee.phonenumber}`
         // const number="+918921358370"
         const number = "+91" + employee.phonenumber;
+        const id=employee._id
         console.log(number);
-        const message = `Dear ${employee.name}......Your employee account has been approved. Welcome to EmployEase!`
+        const message = `Dear ${employee.name}......Your employee account has been approved.Your Licence no is ${id} Welcome to EmployEase!`
         await sendSMS(number, message);
       }
   
