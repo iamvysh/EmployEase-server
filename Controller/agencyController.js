@@ -203,5 +203,27 @@ const approveEmployeeById = async (req, res) => {
     }
   };
 
+const getGetAllapprovedEmployees=async(req,res)=>{
+    try {
+        const approvedEmployees=await employees.find({isApproved:true})
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById}
+        if(approvedEmployees.length>0){
+            return res.status(200).json({
+                message:"successfull",
+                Data:approvedEmployees
+            })
+        }else{
+            return res.status(205).json({
+                message:"failed to fetch approved employees",
+
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            status:"internal server error",
+            message:error.message
+        })
+    }
+}
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees}

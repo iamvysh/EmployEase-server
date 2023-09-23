@@ -1,7 +1,7 @@
 const employee=require("../Model/EmployeeModel")
 const cloudinary=require("../cloudinary/cloudinary")
 const Path = require('path')
-
+const fs = require('fs')
 
 const EmployeeRegister = async (req, res) => {
     console.log(req.body);
@@ -29,6 +29,8 @@ const EmployeeRegister = async (req, res) => {
             } else  {
                 jpgUrls.push(newPath.url);
             }
+            fs.unlinkSync(path)
+
         }
         const image=jpgUrls[0]
         const certifiacte=pdfUrls[0]
