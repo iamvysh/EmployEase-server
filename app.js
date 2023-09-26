@@ -33,6 +33,10 @@ const agencyRoute=require("./Routers/AgencyRoute")
 app.use(agencyRoute)
 
 
+const userRoute=require("./Routers/UserRoute")
+app.use(userRoute)
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
