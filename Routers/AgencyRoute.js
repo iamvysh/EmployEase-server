@@ -11,6 +11,7 @@ router.get("/agency/getunapprovedemployee/:id",Agency.UnApprovedEmployee)
 router.delete("/agency/deleteunapprovedemployee/:id",Agency.DeleteAunapprovedEmployee)
 router.put("/agency/updateunapprovedemployee/:id",Agency.approveEmployeeById)
 router.get("/agency/approvedemployees",Agency.getGetAllapprovedEmployees)
+router.get("/agency/getallusers",Agency.GetAllUsers)
 
 
 module.exports=router;

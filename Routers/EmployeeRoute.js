@@ -7,6 +7,7 @@ const Employee=require("../Controller/employeeController")
 
 
 router.post("/employee/register",uploadfile,Employee.EmployeeRegister)
+router.post("/employee/login",Employee.EmployeeLogin)
 
 
 

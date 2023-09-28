@@ -76,6 +76,36 @@ const EmployeeRegister = async (req, res) => {
             message:err.message
              })
     }
-};
+}
 
-module.exports={EmployeeRegister}
+const EmployeeLogin=async(req,res)=>{
+
+    try {
+        const {id,password}=req.body
+        
+        console.log(id,password);
+           // Find the employee by _id and check if isApproved is true
+    const Employee = await employee.findOne({ _id:id, isApproved: true });
+
+    if (!employee) {
+      return res.status(401).json({ message: 'Invalid credentials or not approved.' });
+    }
+
+    // Check if the provided password matches the stored password
+    if (Employee.password !== password) {
+      return res.status(401).json({ message: 'Invalid credentials or not approved.' });
+    }
+
+    // Authentication successful
+    res.status(200).json({ 
+        message: 'Login successful',
+        Data:Employee
+                                 });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports={EmployeeRegister,EmployeeLogin}

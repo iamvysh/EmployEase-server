@@ -1,7 +1,7 @@
 const agency=require("../Model/AgencyModel")
 const employees=require("../Model/EmployeeModel")
 const { sendSMS } = require('../Twilio/Twili')
-
+const users=require("../Model/UserModel")
 
 const   AgencyRegister=async(req,res)=>{
 
@@ -226,4 +226,16 @@ const getGetAllapprovedEmployees=async(req,res)=>{
     }
 }
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees}
+const GetAllUsers=async(req,res)=>{
+    try {
+        const Allusers=await users.find()
+        res.status(200).json({
+            status:"success",
+            Data:Allusers
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers}
