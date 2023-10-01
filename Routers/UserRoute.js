@@ -9,7 +9,7 @@ router.post("/user/register",User.UserRegister)
 router.post("/user/googleregister",User.GoogleAuthRegister)
 router.post("/user/userlogin",User.UserLogin)
 router.post("/user/googleauthlogin",User.GoogleAuthLogin)
-
+router.post("/user/postjob",User.Postjob)
 
 
 

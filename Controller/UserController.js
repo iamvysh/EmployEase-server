@@ -1,4 +1,5 @@
 const User=require("../Model/UserModel")
+const Job=require("../Model/JobModel")
 
 
 
@@ -82,7 +83,8 @@ const UserLogin=async(req,res)=>{
         if(user.password==password){
            return res.status(200).json({
                 status:"success",
-                message:"userloggin success full"
+                message:"userloggin success full",
+                Data:user._id
             })
         }else{
             return res.status(209).json({
@@ -93,7 +95,9 @@ const UserLogin=async(req,res)=>{
         
     } catch (error) {
 
-        console.log(error);
+        res.status(500).json({
+            message:error
+        })
         
     }
 }
@@ -114,15 +118,43 @@ const GoogleAuthLogin=async(req,res)=>{
             res.status(203).json({message:'not a user,please registrer'})
         }else{
             
-          return  res.status(200).json({message:'user loggin successfull'})
+          return  res.status(200).json({message:'user loggin successfull',Data:existingUser._id})
         }
         
     } catch (error) {
-        console.log(error)
+        res.status(500).json({message:error})
+        
+    }
+}
+
+const Postjob=async(req,res)=>{
+    try {
+        const{userId,jobtitle,phonenumber,address,jobdescription,numberofemployees,place}=req.body
+
+        const newJob=new Job({
+            userId:userId,
+            jobtitle:jobtitle,
+            phonenumber:phonenumber,
+            address:address,
+            jobdescription:jobdescription,
+            numberofemployees:numberofemployees,
+            place:place
+        })
+
+        await newJob.save()
+
+        res.status(200).json({
+            message:"job posted successfully"
+        })
+    } catch (error) {
+
+        res.status(500).json({
+            message:error
+        })
         
     }
 }
 
 
 
-module.exports={UserRegister,GoogleAuthRegister,UserLogin,GoogleAuthLogin}
+module.exports={UserRegister,GoogleAuthRegister,UserLogin,GoogleAuthLogin,Postjob}
