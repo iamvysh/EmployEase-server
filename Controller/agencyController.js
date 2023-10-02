@@ -206,12 +206,19 @@ const approveEmployeeById = async (req, res) => {
 
 const getGetAllapprovedEmployees=async(req,res)=>{
     try {
-        const approvedEmployees=await employees.find({isApproved:true})
+
+        const PAGE_SIZE=6;
+        const page=parseInt(req.query.page)||0;
+        const total=await employees.countDocuments({})
+        const approvedEmployees=await employees.find({isApproved:true}).limit(PAGE_SIZE).skip(PAGE_SIZE*page)
+
+
 
         if(approvedEmployees.length>0){
             return res.status(200).json({
                 message:"successfull",
-                Data:approvedEmployees
+                Data:approvedEmployees,
+                totalPages:Math.ceil(total/PAGE_SIZE)
             })
         }else{
             return res.status(205).json({
@@ -239,12 +246,29 @@ const GetAllUsers=async(req,res)=>{
     }
 }
 
-// const GetAllUnapprovedJobs=async(req,res)=>{
-//     try {
-//         const jobs=
-//     } catch (error) {
-        
-//     }
-// }
+const GetAllUnapprovedJobs=async(req,res)=>{
+    try {
+        const jobs= await Jobs.find({isApproved:false}).populate('userId')
+         
+        if(jobs.length>0){
+            return res.status(200).json({
+                message:"success",
+                Data:jobs
+            })
+            
+        }else{
+            return res.status(201).json({
+                message:"no new job request found",
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers}
+            })
+        }
+    } catch (error) {
+
+        res.status(500).json({
+            message:error
+        })
+        
+    }
+}
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers,GetAllUnapprovedJobs}
