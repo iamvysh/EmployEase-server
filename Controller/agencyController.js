@@ -248,12 +248,18 @@ const GetAllUsers=async(req,res)=>{
 
 const GetAllUnapprovedJobs=async(req,res)=>{
     try {
-        const jobs= await Jobs.find({isApproved:false}).populate('userId')
+
+        const PAGE_SIZE=3;
+        const page=parseInt(req.query.page)||0;
+        const total=await Jobs.countDocuments({})
+
+        const jobs= await Jobs.find({isApproved:false}).populate('userId').limit(PAGE_SIZE).skip(PAGE_SIZE*page)
          
         if(jobs.length>0){
             return res.status(200).json({
                 message:"success",
-                Data:jobs
+                Data:jobs,
+                totalPages:Math.ceil(total/PAGE_SIZE)
             })
             
         }else{
