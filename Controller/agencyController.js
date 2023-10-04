@@ -277,4 +277,23 @@ const GetAllUnapprovedJobs=async(req,res)=>{
     }
 }
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers,GetAllUnapprovedJobs}
+const GetJobbyId=async(req,res)=>{
+    try {
+        const {id} =req.params
+        console.log(id);
+            const Jobdetails=await  Jobs.findOne({_id:id}).populate('userId')
+
+            res.status(200).json({
+                message:"success",
+                Data:Jobdetails
+            })
+          
+    } catch (error) {
+        res.status(500).json({
+            message:"failed",
+            Data:error
+        })
+    }
+}
+
+module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers,GetAllUnapprovedJobs,GetJobbyId}

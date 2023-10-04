@@ -9,7 +9,7 @@ const EmployeeRegister = async (req, res) => {
     try {
         let pdfUrls = []; // Array to store PDF URLs
         let jpgUrls = []; // Array to store JPG URLs
-        const {name,phonenumber,email,password,gender,address,pincode,state,skills,Aadharnumber} = req.body;
+        const {name,phonenumber,email,password,gender,address,pincode,state,category,Aadharnumber} = req.body;
         
         // console.log(name,phonenumber,email,password,gender,address,pincode,state,skills,);
         
@@ -58,7 +58,7 @@ const EmployeeRegister = async (req, res) => {
             state:state,
             imagefile:image,
             pcccertificate:certifiacte,
-            skills:skills,
+            category:category,
             Aadharnumber:Aadharnumber
 
         })

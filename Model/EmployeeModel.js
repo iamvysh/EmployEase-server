@@ -45,7 +45,7 @@ const EmployeeSchema=new mongoose.Schema({
         type:String,
         required:true
     },
-    skills:{
+    category:{
         type:String
 
     }, isApproved: {
