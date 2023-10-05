@@ -16,4 +16,10 @@ router.get("/agency/unapprovedjobs",Agency.GetAllUnapprovedJobs)
 router.get("/agency/getuserbyid/:id",Agency.GetJobbyId)
 
 
+
+
+
+router.get("/agency/jobs/getsimileremployees/:id",Agency.GetSimilerEmployees)
+
+
 module.exports=router;

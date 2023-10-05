@@ -46,9 +46,10 @@ const EmployeeSchema=new mongoose.Schema({
         required:true
     },
     category:{
-        type:String
-
-    }, isApproved: {
+        type:String,
+        required:true,
+    }, 
+    isApproved: {
         type: Boolean,
         default: false, 
       },

@@ -129,11 +129,12 @@ const GoogleAuthLogin=async(req,res)=>{
 
 const Postjob=async(req,res)=>{
     try {
-        const{userId,jobtitle,phonenumber,address,jobdescription,numberofemployees,place}=req.body
+        const{userId,category,jobtitle,phonenumber,address,jobdescription,numberofemployees,place}=req.body
 
         const newJob=new Job({
             userId:userId,
             jobtitle:jobtitle,
+            category:category,
             phonenumber:phonenumber,
             address:address,
             jobdescription:jobdescription,

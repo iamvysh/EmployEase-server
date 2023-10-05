@@ -1,299 +1,321 @@
-const agency=require("../Model/AgencyModel")
-const employees=require("../Model/EmployeeModel")
-const { sendSMS } = require('../Twilio/Twili')
-const users=require("../Model/UserModel")
-const Jobs=require("../Model/JobModel")
+const agency = require("../Model/AgencyModel");
+const employees = require("../Model/EmployeeModel");
+const { sendSMS } = require("../Twilio/Twili");
+const users = require("../Model/UserModel");
+const Jobs = require("../Model/JobModel");
 
-const   AgencyRegister=async(req,res)=>{
+const AgencyRegister = async (req, res) => {
+  console.log(req.body);
 
- console.log(req.body);
- 
+  try {
+    const { username, email, password } = req.body;
 
- try {
-
-    const {username,email,password}=req.body
-
-
-    const Agency= new agency({
-        username:username,
-        email:email,
-        password:password
-    })
-    await Agency.save()
+    const Agency = new agency({
+      username: username,
+      email: email,
+      password: password,
+    });
+    await Agency.save();
 
     res.status(200).json({
-        status:'success',
-        message:"agency registered successfully"
-    })
-    
- } catch (error) {
-
+      status: "success",
+      message: "agency registered successfully",
+    });
+  } catch (error) {
     res.status(405).json({
-        status:'failed to register',
-        message:error.message
-    })
-    
- }
-  
+      status: "failed to register",
+      message: error.message,
+    });
+  }
+};
+const agencyLogin = async (req, res) => {
+  console.log(req.body);
+  try {
+    const { email, password } = req.body;
 
+    // Get the agency account from the database.
+    const Agency = await agency.findOne({ email: email });
 
-
-}
-const agencyLogin=async(req,res)=>{
-
-    console.log(req.body);
-    try {
-
-        const {email,password}=req.body
-
-        // Get the agency account from the database.
-        const Agency = await agency.findOne({email:email})
-
-        // If the agency account does not exist, 
-        if (!Agency) {
-            return res.status(404).json({
-                status: "failed",
-                message: "Agency account does not exist."
-            })
-        }
-
-        
-
-        // If the password is incorrect,
-        if (password !== Agency.password) {
-            return res.status(401).json({
-                status: "failed",
-                message: "Password incorrect."
-            })
-        }
-
-        // If the agency account is valid,
-        return res.status(200).json({
-            status: "success",
-            message: "Agency signed in successfully."
-        })
-
-    } catch (error) {
-        
-        res.status(500).json({
-            status:"internal server error",
-            message:error.message
-        })
-    }
-}
-
-const UnapprovedEmployees=async(req,res)=>{
-
-    try {
-
-        const AllunApprovedEmployees= await employees.find({isApproved:false})
-
-        if( AllunApprovedEmployees.length>0){
-            res.status(200).json({
-                status:"success",
-                Data:AllunApprovedEmployees
-            })
-        }else{
-            res.status(205).json({
-                status:"success",
-                message:"no new request"
-            })
-        }
-        
-    } catch (error) {
-        res.status(500).json({
-            status:"internal server error",
-            message:error.message
-        })
-        
+    // If the agency account does not exist,
+    if (!Agency) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Agency account does not exist.",
+      });
     }
 
-}
-
-const UnApprovedEmployee=async(req,res)=>{
-    try {
-        const {id}=req.params
-        console.log(id)
-        const Employee=await employees.findOne({_id:id})
-
-        if(Employee){
-            return res.status(200).json({
-                status:"success",
-                Data:Employee
-            })
-        }else{
-            return res.status(205).json({
-                status:"success",
-                message:"no employee found"
-            })
-        }
-        
-    } catch (error) {
-        res.status(500).json({
-            status:"internal server error",
-            message:error.message
-        })
-        
+    // If the password is incorrect,
+    if (password !== Agency.password) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Password incorrect.",
+      });
     }
-}
 
-const DeleteAunapprovedEmployee=async(req,res)=>{
-    console.log("this is from deletelemployee ");
-    try {
-        const {id}=req.params
-        console.log(id);
-        const Employee=await employees.findByIdAndDelete({_id:id})
+    // If the agency account is valid,
+    return res.status(200).json({
+      status: "success",
+      message: "Agency signed in successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "internal server error",
+      message: error.message,
+    });
+  }
+};
 
-        console.log("this is from try block");
+const UnapprovedEmployees = async (req, res) => {
+  try {
+    const AllunApprovedEmployees = await employees.find({ isApproved: false });
 
-        console.log(Employee,"employeeeee requestigsrhighsdi");
-        
-        if(Employee){
-            return res.status(200).json({
-                status:"success",
-                message:"employee deleted successfully"
-            })
-        }else{
-            return res.status(205).json({
-                status:"failure",
-                message:"no employee found"
-            })
-        }
-
-    } catch (error) {
-        
-        res.status(500).json({
-            status:"internal server error",
-            message:error.message
-        })
-
+    if (AllunApprovedEmployees.length > 0) {
+      res.status(200).json({
+        status: "success",
+        Data: AllunApprovedEmployees,
+      });
+    } else {
+      res.status(205).json({
+        status: "success",
+        message: "no new request",
+      });
     }
-}
+  } catch (error) {
+    res.status(500).json({
+      status: "internal server error",
+      message: error.message,
+    });
+  }
+};
+
+const UnApprovedEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const Employee = await employees.findOne({ _id: id });
+
+    if (Employee) {
+      return res.status(200).json({
+        status: "success",
+        Data: Employee,
+      });
+    } else {
+      return res.status(205).json({
+        status: "success",
+        message: "no employee found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "internal server error",
+      message: error.message,
+    });
+  }
+};
+
+const DeleteAunapprovedEmployee = async (req, res) => {
+  console.log("this is from deletelemployee ");
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const Employee = await employees.findByIdAndDelete({ _id: id });
+
+    console.log("this is from try block");
+
+    console.log(Employee, "employeeeee requestigsrhighsdi");
+
+    if (Employee) {
+      return res.status(200).json({
+        status: "success",
+        message: "employee deleted successfully",
+      });
+    } else {
+      return res.status(205).json({
+        status: "failure",
+        message: "no employee found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "internal server error",
+      message: error.message,
+    });
+  }
+};
 
 const approveEmployeeById = async (req, res) => {
-    try {
-      const { id } = req.params; 
-      console.log(id)
-  
-      
-      const employee = await employees.findByIdAndUpdate(
-        id,
-        { isApproved: true },
-        { new: true } 
-      );
-  
-      if (!employee) {
-        return res.status(405).json({ message: 'Employee not found' });
-      }
+  try {
+    const { id } = req.params;
+    console.log(id);
 
-      // Check if isApproved is true, and if so, send an SMS
+    const employee = await employees.findByIdAndUpdate(
+      id,
+      { isApproved: true },
+      { new: true }
+    );
+
+    if (!employee) {
+      return res.status(405).json({ message: "Employee not found" });
+    }
+
+    // Check if isApproved is true, and if so, send an SMS
     if (employee.isApproved) {
-        // const number=`+91${employee.phonenumber}`
-        // const number="+918921358370"
-        const number = "+91" + employee.phonenumber;
-        const id=employee._id
-        console.log(number);
-        const message = `Dear ${employee.name}......Your employee account has been approved.Your Licence no is ${id} Welcome to EmployEase!`
-        await sendSMS(number, message);
-      }
-  
-      res.status(200).json({ message: 'Employee approved successfully' });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Internal server error' });
+      // const number=`+91${employee.phonenumber}`
+      // const number="+918921358370"
+      const number = "+91" + employee.phonenumber;
+      const id = employee._id;
+      console.log(number);
+      const message = `Dear ${employee.name}......Your employee account has been approved.Your Licence no is ${id} Welcome to EmployEase!`;
+      await sendSMS(number, message);
     }
-  };
 
-const getGetAllapprovedEmployees=async(req,res)=>{
+    res.status(200).json({ message: "Employee approved successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getGetAllapprovedEmployees = async (req, res) => {
+  try {
+    const PAGE_SIZE = 6;
+    const page = parseInt(req.query.page) || 0;
+    const total = await employees.countDocuments({});
+    const approvedEmployees = await employees
+      .find({ isApproved: true })
+      .limit(PAGE_SIZE)
+      .skip(PAGE_SIZE * page);
+
+    if (approvedEmployees.length > 0) {
+      return res.status(200).json({
+        message: "successfull",
+        Data: approvedEmployees,
+        totalPages: Math.ceil(total / PAGE_SIZE),
+      });
+    } else {
+      return res.status(205).json({
+        message: "failed to fetch approved employees",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      status: "internal server error",
+      message: error.message,
+    });
+  }
+};
+
+const GetAllUsers = async (req, res) => {
+  try {
+    const Allusers = await users.find();
+    res.status(200).json({
+      status: "success",
+      Data: Allusers,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const GetAllUnapprovedJobs = async (req, res) => {
+  try {
+    const PAGE_SIZE = 3;
+    const page = parseInt(req.query.page) || 0;
+    const total = await Jobs.countDocuments({});
+
+    const jobs = await Jobs.find({ isApproved: false })
+      .populate("userId")
+      .limit(PAGE_SIZE)
+      .skip(PAGE_SIZE * page);
+
+    if (jobs.length > 0) {
+      return res.status(200).json({
+        message: "success",
+        Data: jobs,
+        totalPages: Math.ceil(total / PAGE_SIZE),
+      });
+    } else {
+      return res.status(201).json({
+        message: "no new job request found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error,
+    });
+  }
+};
+
+const GetJobbyId = async (req, res) => {
+  try {
+    const id  = req.params.id;
+    console.log(id);
+    const Jobdetails = await Jobs.findOne({ _id: id }).populate("userId");
+
+    res.status(200).json({
+      message: "success",
+      Data: Jobdetails,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "failed",
+      Data: error,
+    });
+  }
+};
+
+const GetSimilerEmployees=async(req,res)=>{
+    const {id} =req.params
+
+    console.log("*********id***********", typeof id);
+
     try {
 
-        const PAGE_SIZE=6;
-        const page=parseInt(req.query.page)||0;
-        const total=await employees.countDocuments({})
-        const approvedEmployees=await employees.find({isApproved:true}).limit(PAGE_SIZE).skip(PAGE_SIZE*page)
-
-
-
-        if(approvedEmployees.length>0){
-            return res.status(200).json({
-                message:"successfull",
-                Data:approvedEmployees,
-                totalPages:Math.ceil(total/PAGE_SIZE)
-            })
-        }else{
-            return res.status(205).json({
-                message:"failed to fetch approved employees",
-
-            })
-        }
-    } catch (error) {
-        res.status(500).json({
-            status:"internal server error",
-            message:error.message
-        })
-    }
-}
-
-const GetAllUsers=async(req,res)=>{
-    try {
-        const Allusers=await users.find()
-        res.status(200).json({
-            status:"success",
-            Data:Allusers
-        })
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-const GetAllUnapprovedJobs=async(req,res)=>{
-    try {
-
-        const PAGE_SIZE=3;
-        const page=parseInt(req.query.page)||0;
-        const total=await Jobs.countDocuments({})
-
-        const jobs= await Jobs.find({isApproved:false}).populate('userId').limit(PAGE_SIZE).skip(PAGE_SIZE*page)
+        console.log("shuaib");
+        const Jobdetails=await Jobs.findById(id)
+        console.log("****jobdetails********",Jobdetails);
          
-        if(jobs.length>0){
-            return res.status(200).json({
-                message:"success",
-                Data:jobs,
-                totalPages:Math.ceil(total/PAGE_SIZE)
-            })
-            
-        }else{
-            return res.status(201).json({
-                message:"no new job request found",
+        const category=Jobdetails.category
 
+        const SimilerEmployees=await employees.find({category:category})
+
+        // if(!Jobdetails){
+
+        //     console.log("no job details");
+        // }
+        // else {
+        //     res.json({Jobdetails,
+        //     category:Jobdetails.category});
+        // }
+
+        if(SimilerEmployees.length>0){
+          return  res.status(200).json({
+                data:SimilerEmployees
+            })
+        }else{
+            return res.status(203).json({
+                message:"no employee found"
             })
         }
-    } catch (error) {
 
-        res.status(500).json({
-            message:error
-        })
-        
-    }
-}
-
-const GetJobbyId=async(req,res)=>{
-    try {
-        const {id} =req.params
-        console.log(id);
-            const Jobdetails=await  Jobs.findOne({_id:id}).populate('userId')
-
-            res.status(200).json({
-                message:"success",
-                Data:Jobdetails
-            })
-          
     } catch (error) {
         res.status(500).json({
             message:"failed",
-            Data:error
+            error:error
         })
     }
 }
 
-module.exports = {AgencyRegister,agencyLogin,UnapprovedEmployees,UnApprovedEmployee,DeleteAunapprovedEmployee,approveEmployeeById,getGetAllapprovedEmployees,GetAllUsers,GetAllUnapprovedJobs,GetJobbyId}
+module.exports = {
+  AgencyRegister,
+  agencyLogin,
+  UnapprovedEmployees,
+  UnApprovedEmployee,
+  DeleteAunapprovedEmployee,
+  approveEmployeeById,
+  getGetAllapprovedEmployees,
+  GetAllUsers,
+  GetAllUnapprovedJobs,
+  GetJobbyId,
+  GetSimilerEmployees,
+};

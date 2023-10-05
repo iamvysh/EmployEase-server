@@ -11,6 +11,10 @@ const jobSchema=new mongoose.Schema({
     jobtitle:{
         type:String
     },
+    category:{
+        type:String,
+        required:true
+    },
     phonenumber:{
         type:Number
     },
