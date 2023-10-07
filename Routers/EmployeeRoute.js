@@ -8,6 +8,9 @@ const Employee=require("../Controller/employeeController")
 
 router.post("/employee/register",uploadfile,Employee.EmployeeRegister)
 router.post("/employee/login",Employee.EmployeeLogin)
+router.get("/employee/newjobs/:id",Employee.NewJobmessages)
+router.put("/employee/approvejobrequest",Employee.AcceptJobReqest)
+router.delete("/employee/deletejobrequest/:employeeId/:requestId",Employee.DeleteJobRequest)
 
 
 

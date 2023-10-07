@@ -306,6 +306,29 @@ const GetSimilerEmployees=async(req,res)=>{
     }
 }
 
+const SendJobMessageToEmployees = async (req, res) => {
+  try {
+    const { data, id } = req.body;
+
+    console.log(data,id,"*****fu****");
+
+
+    for (const employeeId of data) {
+      // Find the employee by their ID and push the job ID into their newRequest array
+      await employees.findByIdAndUpdate(
+        employeeId,
+        { $push: { newRequest: id } },
+        { new: true }
+      );
+    }
+
+    return res.status(200).json({ message: 'Job requests sent successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
 module.exports = {
   AgencyRegister,
   agencyLogin,
@@ -318,4 +341,5 @@ module.exports = {
   GetAllUnapprovedJobs,
   GetJobbyId,
   GetSimilerEmployees,
+  SendJobMessageToEmployees
 };

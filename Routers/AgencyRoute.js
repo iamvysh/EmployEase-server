@@ -14,6 +14,7 @@ router.get("/agency/approvedemployees",Agency.getGetAllapprovedEmployees)
 router.get("/agency/getallusers",Agency.GetAllUsers)
 router.get("/agency/unapprovedjobs",Agency.GetAllUnapprovedJobs)
 router.get("/agency/getuserbyid/:id",Agency.GetJobbyId)
+router.put("/agency/sendjobrequesttoemployees",Agency.SendJobMessageToEmployees)
 
 
 

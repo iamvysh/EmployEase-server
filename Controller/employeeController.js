@@ -2,6 +2,7 @@ const employee=require("../Model/EmployeeModel")
 const cloudinary=require("../cloudinary/cloudinary")
 const Path = require('path')
 const fs = require('fs')
+const Job=require("../Model/JobModel")
 
 const EmployeeRegister = async (req, res) => {
     console.log(req.body);
@@ -108,4 +109,97 @@ const EmployeeLogin=async(req,res)=>{
     }
 }
 
-module.exports={EmployeeRegister,EmployeeLogin}
+const NewJobmessages=async(req,res)=>{
+    try {
+        const id=req.params.id
+
+        const EmployeeDetails=await employee.findById(id).populate("newRequest")
+
+        res.status(200).json({
+            message:"success",
+            Data:EmployeeDetails.newRequest
+        })
+    } catch (error) {
+        res.status(500).json({
+            message:"failed",
+            data:error
+        })
+    }
+}
+
+// ********************trespassers will be prosecuted**********************
+
+const AcceptJobReqest = async (req, res) => {
+    try {
+      const { job_id, employee_id } = req.body;
+  
+      // Check if the employee is already scheduled for the job
+      const job = await Job.findOne({ _id: job_id, scheduledemployees: employee_id });
+  
+      if (job) {
+        return res.status(203).json({
+          message: "Employee is already scheduled for this job",
+        });
+      }
+  
+      // If not, push the employee_id to scheduledemployees
+      const updatedJob = await Job.findOneAndUpdate(
+        { _id: job_id },
+        { $push: { scheduledemployees: employee_id } },
+        { new: true }
+      );
+  
+      res.status(200).json({
+        message: "Successful",
+        updatedJob,
+      });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error",
+        error: error.message,
+      });
+    }
+  };
+  
+// ********************trespassers will be prosecuted**********************
+
+
+const DeleteJobRequest=async(req,res)=>{
+    try {
+
+        const employeeId = req.params.employeeId; 
+        const requestIdToRemove = req.params.requestId;
+
+        const result = await employee.findByIdAndUpdate(
+            employeeId,
+            {
+              $pull: { newRequest: requestIdToRemove },
+            },
+            { new: true } 
+          );
+      
+          if (!result) {
+            return res.status(404).json({ error: "Employee not found" });
+          }
+      
+          return res.status(200).json({ message: "Request ID removed successfully" });
+        
+    } catch (error) {
+
+        res.status(500).json({
+            message:"internal server error",
+            error:error
+        })
+        
+    }
+}
+
+
+// ********************trespassers will be prosecuted**********************
+
+
+
+
+
+
+module.exports={EmployeeRegister,EmployeeLogin,NewJobmessages,AcceptJobReqest,DeleteJobRequest}

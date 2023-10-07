@@ -52,7 +52,16 @@ const EmployeeSchema=new mongoose.Schema({
     isApproved: {
         type: Boolean,
         default: false, 
-      },
+    },
+    isActive:{
+        type:Boolean,
+        default:false,
+    },
+    newRequest:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Job"
+    }],
+
 
 })
 
