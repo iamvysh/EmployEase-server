@@ -329,6 +329,60 @@ const SendJobMessageToEmployees = async (req, res) => {
   }
 };
 
+// ***************************************chat gpt logic verify the code   *****************************
+const AgencyApproveJob=async(req,res)=>{
+  const jobId=req.params.id
+  try {
+
+    console.log("agency approve is working");
+    // Find the job by its ID
+    const job = await Jobs.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    // Update isApproved to true
+    job.isApproved = true;
+
+    // Modify the scheduledemployees array length
+    const numberOfEmployees = job.numberofemployees;
+    if (job.scheduledemployees.length >=numberOfEmployees) {
+      job.scheduledemployees = job.scheduledemployees.slice(0, numberOfEmployees);
+    }
+      
+
+    console.log("------scheduledemployees array after slice-------", job.scheduledemployees);
+
+    
+
+    // Find all jobs with isApproved false
+    const jobsToUpdate = await Jobs.find({ _id: { $ne: jobId }, isApproved: false });
+
+// const result = b.filter(element => !a.includes(element));
+// Create a set of employee IDs from the approved job
+// Iterate through jobsToUpdate to remove matching employee IDs from scheduledemployees
+for (const jobToUpdate of jobsToUpdate) {
+  jobToUpdate.scheduledemployees = jobToUpdate.scheduledemployees.filter((employeeId) =>
+    !job.scheduledemployees.includes(employeeId)
+  );
+  console.log("eliminatined pure array",jobToUpdate);
+  // Save the updated job
+  await jobToUpdate.save();
+}
+
+    // Save the updated job
+    await job.save();
+
+    return res.status(200).json({ message: 'Job approved successfully' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
+// *******************end of todo to verify ****************************
 module.exports = {
   AgencyRegister,
   agencyLogin,
@@ -341,5 +395,6 @@ module.exports = {
   GetAllUnapprovedJobs,
   GetJobbyId,
   GetSimilerEmployees,
-  SendJobMessageToEmployees
+  SendJobMessageToEmployees,
+  AgencyApproveJob
 };
