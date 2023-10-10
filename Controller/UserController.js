@@ -129,7 +129,7 @@ const GoogleAuthLogin=async(req,res)=>{
 
 const Postjob=async(req,res)=>{
     try {
-        const{userId,category,jobtitle,phonenumber,address,jobdescription,numberofemployees,place}=req.body
+        const{userId,category,jobtitle,phonenumber,address,jobdescription,numberofemployees,place,Date,numberofdays}=req.body
 
         const newJob=new Job({
             userId:userId,
@@ -139,7 +139,9 @@ const Postjob=async(req,res)=>{
             address:address,
             jobdescription:jobdescription,
             numberofemployees:numberofemployees,
-            place:place
+            place:place,
+            Date:Date,
+            numberofdays:numberofdays
         })
 
         await newJob.save()

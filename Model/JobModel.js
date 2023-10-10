@@ -38,7 +38,15 @@ const jobSchema=new mongoose.Schema({
     scheduledemployees:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Employee",
-    }]
+    }],
+    Date: {  
+        type: Date,  
+        required:true
+      },
+      numberofdays: {  
+        type: Number,  
+        default: 1,
+      },
 })
 
 const Job=mongoose.model("Job",jobSchema)

@@ -4,6 +4,7 @@ const { sendSMS } = require("../Twilio/Twili");
 const users = require("../Model/UserModel");
 const Jobs = require("../Model/JobModel");
 
+
 const AgencyRegister = async (req, res) => {
   console.log(req.body);
 
@@ -341,7 +342,12 @@ const AgencyApproveJob=async(req,res)=>{
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
-
+    
+    if(job.scheduledemployees.length <job.numberofemployees){
+      return res.status(203).json({
+        message:"employees are not scheduled"
+      })
+    }
     // Update isApproved to true
     job.isApproved = true;
 
@@ -354,6 +360,15 @@ const AgencyApproveJob=async(req,res)=>{
 
     console.log("------scheduledemployees array after slice-------", job.scheduledemployees);
 
+    // updating employee status ti isAcive true
+
+    for (const employeeId of job.scheduledemployees) {
+      const employee = await employees.findById(employeeId);
+      if (employee) {
+        employee.isActive = true;
+        await employee.save();
+      }
+    }
     
 
     // Find all jobs with isApproved false
@@ -381,6 +396,30 @@ for (const jobToUpdate of jobsToUpdate) {
   }
 }
 
+const AgencydeleteJob=async(req,res)=>{
+  const id=req.params.id
+  console.log(idpo);
+  try {
+    const job=await Jobs.findByIdAndDelete(id)
+    if(!job){
+      return res.status(404).json({
+        message:"no job found"
+      })
+    }
+
+    res.status(200).json({
+      message:"job deleted successfully"
+    })
+  } catch (error) {
+
+    res.status(500).json({
+      message:"error",
+      data:error,
+    })
+    
+  }
+}
+
 
 // *******************end of todo to verify ****************************
 module.exports = {
@@ -396,5 +435,7 @@ module.exports = {
   GetJobbyId,
   GetSimilerEmployees,
   SendJobMessageToEmployees,
-  AgencyApproveJob
+  AgencyApproveJob,
+  AgencydeleteJob
+
 };
