@@ -398,7 +398,7 @@ for (const jobToUpdate of jobsToUpdate) {
 
 const AgencydeleteJob=async(req,res)=>{
   const id=req.params.id
-  console.log(idpo);
+  console.log(id);
   try {
     const job=await Jobs.findByIdAndDelete(id)
     if(!job){

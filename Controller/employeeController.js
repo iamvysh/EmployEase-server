@@ -148,10 +148,17 @@ const AcceptJobReqest = async (req, res) => {
         { $push: { scheduledemployees: employee_id } },
         { new: true }
       );
+
+      const updatedEmployee=await employee.findByIdAndUpdate(
+        employee_id,
+      { $pull: { newRequest: job_id } },
+      { new: true }
+      )
   
       res.status(200).json({
         message: "Successful",
         updatedJob,
+        updatedEmployee
       });
     } catch (error) {
       res.status(500).json({
