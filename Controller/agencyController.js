@@ -366,6 +366,8 @@ const AgencyApproveJob=async(req,res)=>{
       const employee = await employees.findById(employeeId);
       if (employee) {
         employee.isActive = true;
+        // Push the jobId to the approvedRequest array of the employee
+        employee.approvedRequest.push(jobId);
         await employee.save();
       }
     }

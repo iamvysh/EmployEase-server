@@ -61,6 +61,14 @@ const EmployeeSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Job"
     }],
+    approvedRequest:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Job"
+    }],
+    completedRequest:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Job"
+    }],
 
 
 })

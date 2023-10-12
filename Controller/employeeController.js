@@ -204,9 +204,32 @@ const DeleteJobRequest=async(req,res)=>{
 
 // ********************trespassers will be prosecuted**********************
 
+const GetapprovedJob=async(req,res)=>{
+  try {
+    const id=req.params.id
+    console.log(id);
+
+    const jobdetails=await employee.findOne({_id:id}).populate("approvedRequest")
+
+    if(!jobdetails){
+     return res.status(404).json({
+        message:"no employee found"
+      })
+    }
+    res.status(200).json({
+      message:"success",
+      Data:jobdetails
+    })
+    
+  } catch (error) {
+    res.status(500).json({
+      message:"server error",
+      data:error
+    })
+  }
+}
 
 
 
 
-
-module.exports={EmployeeRegister,EmployeeLogin,NewJobmessages,AcceptJobReqest,DeleteJobRequest}
+module.exports={EmployeeRegister,EmployeeLogin,NewJobmessages,AcceptJobReqest,DeleteJobRequest,GetapprovedJob}
