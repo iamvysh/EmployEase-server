@@ -423,6 +423,52 @@ const AgencydeleteJob=async(req,res)=>{
 }
 
 
+const  GetApprovedAlljobs=async(req,res)=>{
+  try {
+    const jobs= await Jobs.find({isApproved:true}).populate("scheduledemployees")
+
+    if(jobs.length>0){
+      return res.status(200).json({
+        message:"success",
+        Data:jobs
+      })
+    }else{
+      res.status(203).json({
+        message:"No New Approved Jobs"
+      })
+    }
+
+
+  } catch (error) {
+    res.status(500).json({
+      message:"something went wrong",
+      error:error
+    })
+  }
+}
+
+
+
+
+const GetAllCompletedRequests=async(req,res)=>{
+  try {
+    const ApprovedJobs=await Jobs.find({isCompleted:true}).populate("scheduledemployees")
+
+    if(AgencyApproveJob.length>0){
+      return res.status(200).json({
+        message:"sucees",
+        Data:ApprovedJobs
+      })
+    }
+  } catch (error) {
+    res.status(500).json({
+      message:"error",
+      Data:error
+    })
+  }
+}
+
+
 // *******************end of todo to verify ****************************
 module.exports = {
   AgencyRegister,
@@ -438,6 +484,9 @@ module.exports = {
   GetSimilerEmployees,
   SendJobMessageToEmployees,
   AgencyApproveJob,
-  AgencydeleteJob
+  AgencydeleteJob,
+  GetApprovedAlljobs,
+  GetAllCompletedRequests
+
 
 };

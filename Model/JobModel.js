@@ -47,6 +47,10 @@ const jobSchema=new mongoose.Schema({
         type: Number,  
         default: 1,
       },
+    isCompleted:{
+        type:Boolean,
+        default:false,
+    } 
 })
 
 const Job=mongoose.model("Job",jobSchema)
