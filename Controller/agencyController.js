@@ -425,7 +425,7 @@ const AgencydeleteJob=async(req,res)=>{
 
 const  GetApprovedAlljobs=async(req,res)=>{
   try {
-    const jobs= await Jobs.find({isApproved:true}).populate("scheduledemployees")
+    const jobs= await Jobs.find({isApproved:true}).populate("scheduledemployees").populate("userId")
 
     if(jobs.length>0){
       return res.status(200).json({
@@ -452,7 +452,7 @@ const  GetApprovedAlljobs=async(req,res)=>{
 
 const GetAllCompletedRequests=async(req,res)=>{
   try {
-    const ApprovedJobs=await Jobs.find({isCompleted:true}).populate("scheduledemployees")
+    const ApprovedJobs=await Jobs.find({isCompleted:true}).populate("scheduledemployees").populate("userId")
 
     if(AgencyApproveJob.length>0){
       return res.status(200).json({
