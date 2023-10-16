@@ -102,7 +102,7 @@ const EmployeeLogin=async(req,res)=>{
         message: 'Login successful',
         Data:Employee
                                  });
-
+                                 zon
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
@@ -230,6 +230,46 @@ const GetapprovedJob=async(req,res)=>{
 }
 
 
+const CompleteJobrequiest=async(req,res)=>{
+  try {
+    const jobId = req.params.id;
+    const employeeId = req.params.employeeid; 
+
+    // Find the employee by their ID and update the completedRequest and approvedRequest fields
+    const updatedEmployee = await employee.findOneAndUpdate(
+      { _id: employeeId },
+      {
+        $pull: { approvedRequest: jobId }, // Remove jobId from approvedRequest
+        $push: { completedRequest: jobId }, // Add jobId to completedRequest
+        isActive: false, // Set isActive to false
+
+      },
+      { new: true }
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    // Update the job's isCompleted to true
+    const updatedJob = await Job.findByIdAndUpdate(
+      jobId,
+      { isCompleted: true },
+      { new: true }
+    );
+
+    if (!updatedJob) {
+      return res.status(404).json({ message: 'Job not found' });
+    }
+
+    return res.status(200).json({ message: 'Job marked as completed', Data: updatedJob });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 
-module.exports={EmployeeRegister,EmployeeLogin,NewJobmessages,AcceptJobReqest,DeleteJobRequest,GetapprovedJob}
+
+
+module.exports={EmployeeRegister,EmployeeLogin,NewJobmessages,AcceptJobReqest,DeleteJobRequest,GetapprovedJob,CompleteJobrequiest}

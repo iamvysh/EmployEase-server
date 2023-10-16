@@ -268,7 +268,7 @@ const GetJobbyId = async (req, res) => {
 const GetSimilerEmployees=async(req,res)=>{
     const {id} =req.params
 
-    console.log("*********id***********", typeof id);
+    console.log("*********id***********",  id);
 
     try {
 
@@ -278,7 +278,10 @@ const GetSimilerEmployees=async(req,res)=>{
          
         const category=Jobdetails.category
 
-        const SimilerEmployees=await employees.find({category:category})
+        console.log(category);
+
+        const SimilerEmployees=await employees.find({ category: category, isActive: false })
+        console.log("siiler  emoloyeees",SimilerEmployees);
 
         // if(!Jobdetails){
 
@@ -425,7 +428,7 @@ const AgencydeleteJob=async(req,res)=>{
 
 const  GetApprovedAlljobs=async(req,res)=>{
   try {
-    const jobs= await Jobs.find({isApproved:true}).populate("scheduledemployees").populate("userId")
+    const jobs= await Jobs.find({isApproved:true,isCompleted:false}).populate("scheduledemployees").populate("userId")
 
     if(jobs.length>0){
       return res.status(200).json({
