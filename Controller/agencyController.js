@@ -251,7 +251,7 @@ const GetJobbyId = async (req, res) => {
   try {
     const id  = req.params.id;
     console.log(id);
-    const Jobdetails = await Jobs.findOne({ _id: id }).populate("userId");
+    const Jobdetails = await Jobs.findOne({ _id: id }).populate("userId").populate("scheduledemployees")
 
     res.status(200).json({
       message: "success",
