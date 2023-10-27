@@ -19,8 +19,8 @@ router.put("/agency/jobs/approvejob/:id",Agency.AgencyApproveJob)
 router.delete("/agency/jobs/deletejob/:id",Agency.AgencydeleteJob)
 router.get("/agenccy/getallapprovedjobs",Agency.GetApprovedAlljobs)
 router.get("/agency/jobs/getallcompletedjobs",Agency.GetAllCompletedRequests)
-
-
+router.post("/agency/payment/employee",Agency.paymenttoindividualemployee)
+router.post("agency/verifypayment/employee",Agency.verifypayment)
 
 
 router.get("/agency/jobs/getsimileremployees/:id",Agency.GetSimilerEmployees)
