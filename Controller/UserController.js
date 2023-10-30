@@ -1,5 +1,7 @@
 const User=require("../Model/UserModel")
 const Job=require("../Model/JobModel")
+const Razorpay=require("razorpay")
+const crypto=require("crypto")
 
 
 
@@ -158,6 +160,140 @@ const Postjob=async(req,res)=>{
     }
 }
 
+const UnapprovedJob=async(req,res)=>{
+    const id=req.params.id
+
+    console.log("user is isss",id);
+    try {
+        const jobs=await Job.find({userId:id,isApproved:false})
+
+        if(jobs.length>0){
+            res.status(200).json(
+                {
+                    message:"success",
+                    Data:jobs
+                }
+            )
+        }else{
+            res.status(201).json({
+                message:"no unapproved jobs"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message:"internal server error",
+            error:error
+        })
+    }
+}
+
+const ApprovedJob=async(req,res)=>{
+    const id=req.params.id
+
+    console.log("user is isss",id);
+    try {
+        const jobs=await Job.find({userId:id,isApproved:true,isCompleted:false})
+
+        if(jobs.length>0){
+            res.status(200).json(
+                {
+                    message:"success",
+                    Data:jobs
+                }
+            )
+        }else{
+            res.status(201).json({
+                message:"no approved jobs"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message:"internal server error",
+            error:error
+        })
+    }
+}
+
+const CompletedJob=async(req,res)=>{
+    const id=req.params.id
+
+    console.log("user is isss",id);
+    try {
+        const jobs=await Job.find({userId:id,isCompleted:true})
+
+        if(jobs.length>0){
+            res.status(200).json(
+                {
+                    message:"success",
+                    Data:jobs
+                }
+            )
+        }else{
+            res.status(201).json({
+                message:"no completed jobs"
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            message:"internal server error",
+            error:error
+        })
+    }
+}
 
 
-module.exports={UserRegister,GoogleAuthRegister,UserLogin,GoogleAuthLogin,Postjob}
+const Paymenttoagency=async(req,res)=>{
+    try {
+     
+      const instance=new Razorpay({
+        key_id:process.env.key_id,
+        key_secret:process.env.key_secret,
+      })
+  
+      const options={
+        
+        amount:req.body.amount*100,
+        currency:"INR",
+        receipt:crypto.randomBytes(10).toString("hex")
+      }
+      
+      instance.orders.create(options,(error,order)=>{
+        if(error){
+          console.log(error);
+          return res.status(500).json({message:"Something Went ewrong"})
+        }
+        res.status(200).json({
+          data:order
+        })
+      })
+      
+    } catch (error) {
+      console.log("error",error)
+      return res.status(500).json({message:"Internal server error"})
+  
+    }
+  }
+
+const Verifypayment=async(req,res)=>{
+    try {
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+              req.body;
+        const sign = razorpay_order_id + "|" + razorpay_payment_id;
+        const expectedSign = crypto
+              .createHmac("sha256", process.env.KEY_SECRET)
+              .update(sign.toString())
+              .digest("hex");
+  
+        if (razorpay_signature === expectedSign) {
+          return res.status(200).json({ message: "Payment verified successfully" });
+        } else {
+          return res.status(400).json({ message: "Invalid signature sent!" });
+        }
+    } catch (error) {
+      res.status(500).json({ message: "Internal Server Error!" });
+          console.log(error);
+    }
+} 
+
+
+module.exports={UserRegister,GoogleAuthRegister,UserLogin,GoogleAuthLogin,Postjob,UnapprovedJob,ApprovedJob,CompletedJob,Paymenttoagency,Verifypayment}
